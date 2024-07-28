@@ -6,7 +6,7 @@ import util from "util";
 import fs from "fs";
 import path from "path";
 
-const sleep = (ms = 2000) => new Promise((resolve) => setTimeout(resolve, ms));
+const sleep = (ms = 1000) => new Promise((resolve) => setTimeout(resolve, ms));
 const figletPromise = util.promisify(figlet);
 const readdir = util.promisify(fs.readdir);
 const readFile = util.promisify(fs.readFile);
@@ -92,7 +92,7 @@ async function readFiles() {
   for (const file of files) {
     const fileParts = file.split(".");
     const fileExtension = "." + fileParts[fileParts.length - 1];
-    console.log(fileExtension);
+    // console.log(fileExtension);
     if (!files.includes(fileExtension)) {
       cleanedArray.push(file);
     }
@@ -123,6 +123,7 @@ async function readFiles() {
     }
 
     // read contents and append to final string array
+    // TO-DO - add filenames and delimiters
     const content = await readFile(filePath, "utf-8");
     finalStringArray.push(content);
   }
@@ -133,7 +134,9 @@ async function readFiles() {
 (async function () {
   await startingTokenCount();
   const finalStringArray = await readFiles();
-  console.log("final string array: ", finalStringArray);
+  const finalString = finalStringArray.join("\n");
+  // console.log("final string array: ", finalStringArray);
+  console.log("final string: ", finalString);
 })();
 
 // TO-DO - recursively read files from current dir
