@@ -3,6 +3,7 @@ import chalkAnimation from "chalk-animation";
 import figlet from "figlet";
 import gradient from "gradient-string";
 import util from "util";
+import fs from "fs";
 
 const proompts = {
   1: {
