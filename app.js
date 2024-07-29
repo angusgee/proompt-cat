@@ -104,7 +104,7 @@ function processFilePaths(fileList, currentDir) {
     // Replace backslashes with forward slashes
     relativePath = relativePath.replace(/\\/g, "/");
 
-    // Get only the filename and its immediate parent directory, if any
+    // Get only the filename
     const parts = relativePath.split("/");
     return parts[parts.length - 1];
   });
@@ -135,77 +135,32 @@ async function createFileObjects(relativeFilePaths, currentDir) {
   return fileObjects;
 }
 
+function countTokens(fileObjects) {
+  let tokenCount = 0;
+  for (const fileObject of fileObjects) {
+    const punctuationRegex =
+      /[\u2000-\u206F\u2E00-\u2E7F\\'!"#$%&()*+,\-.\/:;<=>?@\[\]^_`{|}~]/g;
+    const words = fileObject.contents.split(punctuationRegex).filter(Boolean);
+    tokenCount += words.length;
+  }
+  return tokenCount;
+}
+
 async function main() {
   await showStartingScreen();
   const currentDir = process.cwd();
   const fileList = await getFilePaths(currentDir);
   const relativeFilePaths = processFilePaths(fileList, currentDir);
   const fileObjects = await createFileObjects(relativeFilePaths, currentDir);
+  for (const fileObject of fileObjects) {
+    const tokenCount = countTokens(fileObject.contents);
+    fileObject.tokens = tokenCount;
+    fileObject.contents = `${tokenCount} tokens`;
+  }
   console.log("File objects:", fileObjects);
 }
 
 main().catch(console.error);
-
-// async function readFiles() {
-//   const currentDirectory = process.cwd();
-//   const finalStringArray = [];
-
-//   // read files
-//   const files = await readdir(currentDirectory);
-//   console.log("list of files to process: ", files);
-
-//   // create new array with unwanted file types removed
-//   const cleanedArray = [];
-
-//   // check file extension is not blacklisted, add to new array
-//   for (const file of files) {
-//     const fileParts = file.split(".");
-//     const fileExtension = "." + fileParts[fileParts.length - 1];
-//     // console.log(fileExtension);
-//     if (!files.includes(fileExtension)) {
-//       cleanedArray.push(file);
-//     }
-//   }
-
-//   console.log(
-//     "cleaned array with unwanted file extentions removed: ",
-//     cleanedArray
-//   );
-
-//   // iterate over files
-//   for (const file of cleanedArray) {
-//     // exclude package-lock file
-//     if (file === "package-lock.json") {
-//       continue;
-//     }
-
-//     const filePath = path.join(currentDirectory, file);
-
-//     // exclude node modules folder
-//     if (filePath.includes("node_modules/")) {
-//       continue;
-//     }
-
-//     const fileStat = await stat(filePath);
-//     if (fileStat.isDirectory()) {
-//       continue;
-//     }
-
-//     // read contents and append to final string array
-//     // TO-DO - add filenames and delimiters
-//     const content = await readFile(filePath, "utf-8");
-//     finalStringArray.push(content);
-//   }
-
-//   return finalStringArray;
-// }
-//(async function () {
-// await startingTokenCount();
-// const finalStringArray = await readFiles();
-// const finalString = finalStringArray.join("\n");
-// console.log("final string array: ", finalStringArray);
-// console.log("final string: ", finalString);
-//})();
 
 // count tokens
 // remove blank rows (??)
