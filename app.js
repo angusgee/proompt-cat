@@ -58,7 +58,7 @@ const fileExtentionsToExclude = [
   ".spec",
 ];
 
-async function startingTokenCount() {
+async function showStartingScreen() {
   console.clear();
   const msg = `Proompt Cat`;
   const data = await figletPromise(msg);
@@ -70,7 +70,8 @@ async function startingTokenCount() {
   animatedTitle.stop();
 }
 
-async function readAllFiles(dir) {
+// recursively get all filepaths from directory
+async function getFilePaths(dir) {
   const fileList = [];
   try {
     const items = await fs.readdir(dir, { withFileTypes: true });
@@ -78,8 +79,14 @@ async function readAllFiles(dir) {
       const fullPath = path.join(dir, item.name);
 
       if (item.isDirectory()) {
-        fileList.push(...(await readAllFiles(fullPath)));
-      } else if (item.isFile()) {
+        if (!["node_modules", ".git", "dist"].includes(item.name)) {
+          fileList.push(...(await getFilePaths(fullPath)));
+        }
+      } else if (
+        item.isFile() &&
+        !item.name.includes("package-lock") &&
+        !fileExtentionsToExclude.includes(path.extname(item.name))
+      ) {
         fileList.push(fullPath);
       }
     }
@@ -89,11 +96,52 @@ async function readAllFiles(dir) {
   return fileList;
 }
 
+function processFilePaths(fileList, currentDir) {
+  return fileList.map((filePath) => {
+    // Remove the current directory from the path
+    let relativePath = filePath.replace(currentDir, "").slice(1);
+
+    // Replace backslashes with forward slashes
+    relativePath = relativePath.replace(/\\/g, "/");
+
+    // Get only the filename and its immediate parent directory, if any
+    const parts = relativePath.split("/");
+    return parts[parts.length - 1];
+  });
+}
+
+async function readFileContents(filePath) {
+  try {
+    const content = await fs.readFile(filePath, "utf8");
+    return content;
+  } catch (error) {
+    console.log(`Error reading file ${filePath}:`, error);
+    return null;
+  }
+}
+
+async function createFileObjects(relativeFilePaths, currentDir) {
+  const fileObjects = [];
+  for (const relativePath of relativeFilePaths) {
+    const fullPath = path.join(currentDir, relativePath);
+    const content = await readFileContents(fullPath);
+    if (content !== null) {
+      fileObjects.push({
+        name: path.basename(relativePath),
+        contents: content,
+      });
+    }
+  }
+  return fileObjects;
+}
+
 async function main() {
-  await startingTokenCount();
-  const dirPath = process.cwd();
-  const files = await readAllFiles(dirPath);
-  console.log(files);
+  await showStartingScreen();
+  const currentDir = process.cwd();
+  const fileList = await getFilePaths(currentDir);
+  const relativeFilePaths = processFilePaths(fileList, currentDir);
+  const fileObjects = await createFileObjects(relativeFilePaths, currentDir);
+  console.log("File objects:", fileObjects);
 }
 
 main().catch(console.error);
@@ -159,7 +207,6 @@ main().catch(console.error);
 // console.log("final string: ", finalString);
 //})();
 
-// recursively read files from current dir
 // count tokens
 // remove blank rows (??)
 // add delimiters
