@@ -139,14 +139,13 @@ async function readFiles() {
   console.log("final string: ", finalString);
 })();
 
-// TO-DO - recursively read files from current dir
-// read files
-// remove files with excluded extensions
-// TO-DO - count tokens
-// remove blank rows
+// recursively read files from current dir
+// count tokens
+// remove blank rows (??)
 // add delimiters
 // add filenames
-// TO-DO - display list of tokens and allow user to toggle
-// TO-DO - copy the final string to the clipboard
-// TO-DO - save final string to a text file
-// TO-DO - display success message
+// display list of tokens and allow user to toggle
+// allow user to choose a prompt
+// copy the final string to the clipboard
+// save final string to a text file
+// display success message
