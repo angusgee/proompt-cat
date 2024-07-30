@@ -96,20 +96,6 @@ async function getFilePaths(dir) {
   return fileList;
 }
 
-function processFilePaths(fileList, currentDir) {
-  return fileList.map((filePath) => {
-    // Remove the current directory from the path
-    let relativePath = filePath.replace(currentDir, "").slice(1);
-
-    // Replace backslashes with forward slashes
-    relativePath = relativePath.replace(/\\/g, "/");
-
-    // Get only the filename
-    const parts = relativePath.split("/");
-    return parts[parts.length - 1];
-  });
-}
-
 async function readFileContents(filePath) {
   try {
     const content = await fs.readFile(filePath, "utf8");
@@ -120,14 +106,14 @@ async function readFileContents(filePath) {
   }
 }
 
-async function createFileObjects(relativeFilePaths, currentDir) {
+async function createFileObjects(filePaths) {
   const fileObjects = [];
-  for (const relativePath of relativeFilePaths) {
-    const fullPath = path.join(currentDir, relativePath);
-    const content = await readFileContents(fullPath);
+  for (const filePath of filePaths) {
+    // const fullPath = path.join(currentDir, relativePath);
+    const content = await readFileContents(filePath);
     if (content !== null) {
       fileObjects.push({
-        name: path.basename(relativePath),
+        name: path.basename(filePath),
         contents: content,
       });
     }
@@ -135,27 +121,23 @@ async function createFileObjects(relativeFilePaths, currentDir) {
   return fileObjects;
 }
 
-function countTokens(fileObjects) {
-  let tokenCount = 0;
-  for (const fileObject of fileObjects) {
-    const punctuationRegex =
-      /[\u2000-\u206F\u2E00-\u2E7F\\'!"#$%&()*+,\-.\/:;<=>?@\[\]^_`{|}~]/g;
-    const words = fileObject.contents.split(punctuationRegex).filter(Boolean);
-    tokenCount += words.length;
-  }
-  return tokenCount;
+function countTokens(fileObject) {
+  const punctuationRegex =
+    /[\u2000-\u206F\u2E00-\u2E7F\\'!"#$%&()*+,\-.\/:;<=>?@\[\]^_`{|}~]/g;
+  const words = fileObject.contents.split(punctuationRegex).filter(Boolean);
+  return words.length;
 }
 
 async function main() {
   await showStartingScreen();
   const currentDir = process.cwd();
   const fileList = await getFilePaths(currentDir);
-  const relativeFilePaths = processFilePaths(fileList, currentDir);
-  const fileObjects = await createFileObjects(relativeFilePaths, currentDir);
+  console.log("file list: ", fileList);
+  // const fileNames = getFileNameFromFilePath(fileList, currentDir);
+  const fileObjects = await createFileObjects(fileList);
+  console.log("file objects: ", fileObjects);
   for (const fileObject of fileObjects) {
-    const tokenCount = countTokens(fileObject.contents);
-    fileObject.tokens = tokenCount;
-    fileObject.contents = `${tokenCount} tokens`;
+    fileObject.tokens = countTokens(fileObject);
   }
   console.log("File objects:", fileObjects);
 }
@@ -171,3 +153,16 @@ main().catch(console.error);
 // copy the final string to the clipboard
 // save final string to a text file
 // display success message
+// function getFileNameFromFilePath(fileList, currentDir) {
+//   return fileList.map((filePath) => {
+//     // Remove the current directory from the path
+//     let relativePath = filePath.replace(currentDir, "").slice(1);
+
+//     // Replace backslashes with forward slashes
+//     relativePath = relativePath.replace(/\\/g, "/");
+
+//     // Get only the filename
+//     const parts = relativePath.split("/");
+//     return parts[parts.length - 1];
+//   });
+// }
