@@ -109,7 +109,6 @@ async function readFileContents(filePath) {
 async function createFileObjects(filePaths) {
   const fileObjects = [];
   for (const filePath of filePaths) {
-    // const fullPath = path.join(currentDir, relativePath);
     const content = await readFileContents(filePath);
     if (content !== null) {
       fileObjects.push({
@@ -122,20 +121,18 @@ async function createFileObjects(filePaths) {
 }
 
 function countTokens(fileObject) {
-  const punctuationRegex =
-    /[\u2000-\u206F\u2E00-\u2E7F\\'!"#$%&()*+,\-.\/:;<=>?@\[\]^_`{|}~]/g;
-  const words = fileObject.contents.split(punctuationRegex).filter(Boolean);
-  return words.length;
+  const tokenRegex = /\w+|[^\w\s]+/g;
+  const tokens = fileObject.contents.match(tokenRegex);
+  return tokens ? tokens.length : 0;
 }
 
 async function main() {
   await showStartingScreen();
   const currentDir = process.cwd();
   const fileList = await getFilePaths(currentDir);
-  console.log("file list: ", fileList);
-  // const fileNames = getFileNameFromFilePath(fileList, currentDir);
+  // console.log("file list: ", fileList);
   const fileObjects = await createFileObjects(fileList);
-  console.log("file objects: ", fileObjects);
+  // console.log("file objects: ", fileObjects);
   for (const fileObject of fileObjects) {
     fileObject.tokens = countTokens(fileObject);
   }
@@ -147,22 +144,8 @@ main().catch(console.error);
 // count tokens
 // remove blank rows (??)
 // add delimiters
-// add filenames
 // display list of tokens and allow user to toggle
 // allow user to choose a prompt
 // copy the final string to the clipboard
 // save final string to a text file
 // display success message
-// function getFileNameFromFilePath(fileList, currentDir) {
-//   return fileList.map((filePath) => {
-//     // Remove the current directory from the path
-//     let relativePath = filePath.replace(currentDir, "").slice(1);
-
-//     // Replace backslashes with forward slashes
-//     relativePath = relativePath.replace(/\\/g, "/");
-
-//     // Get only the filename
-//     const parts = relativePath.split("/");
-//     return parts[parts.length - 1];
-//   });
-// }
