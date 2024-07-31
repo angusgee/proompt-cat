@@ -137,31 +137,19 @@ function addTokenCount(fileObject) {
 }
 
 function calculateTotalTokens(fileObjects) {
-  return fileObjects.reduce((total, file) => total + file.tokens, 0);
+  if (Array.isArray(fileObjects)) {
+    return fileObjects.reduce((total, file) => total + file.tokens, 0);
+  } else {
+    return fileObjects.tokens || 0;
+  }
 }
 
-function displayFileInfo(fileObjects) {
-  fileObjects.forEach((file) => {
-    console.log(`${file.filename}: ${file.tokens} tokens`);
-  });
-  console.log(`Total tokens: ${calculateTotalTokens(fileObjects)}`);
-}
-
-function createCheckboxChoices(fileObjects) {
-  return fileObjects.map((file) => ({
-    name: `${file.filename} (${file.tokens} tokens)`,
-    value: file,
-    checked: true,
-  }));
-}
-
-function updateTotalTokens(choices) {
-  const selectedFiles = choices
-    .filter((choice) => choice.checked)
-    .map((choice) => choice.value);
-  const totalTokens = calculateTotalTokens(selectedFiles);
-  console.log(`Updated total tokens: ${totalTokens}`);
-}
+// function displayFileInfo(fileObjects) {
+//   fileObjects.forEach((file) => {
+//     console.log(`${file.filename}: ${file.tokens} tokens`);
+//   });
+//   console.log(`Total tokens: ${calculateTotalTokens(fileObjects)}`);
+// }
 
 function concatenateSelectedFiles(selectedFiles) {
   return selectedFiles.reduce((result, file) => {
@@ -170,23 +158,45 @@ function concatenateSelectedFiles(selectedFiles) {
 }
 
 async function selectFiles(fileObjects) {
-  const { selectedFiles } = await inquirer.prompt([
-    {
-      type: "checkbox",
-      name: "selectedFiles",
-      message:
-        "Select files to include (use arrow keys and space to toggle, Enter when done):",
-      choices: createCheckboxChoices(fileObjects),
-      loop: false,
-    },
-  ]);
+  let selectedFiles = [...fileObjects];
+  while (true) {
+    const { action } = await inquirer.prompt([
+      {
+        type: "checkbox",
+        name: "action",
+        message: `\nSelect files to include. Starting tokens: ${calculateTotalTokens(
+          selectedFiles
+        )}.\n\nReduce token count if desired by toggling large or irrelevant files off. \nPress enter when done.\n`,
+        choices: fileObjects.map((file) => ({
+          name: `${file.filename} (${file.tokens} tokens)`,
+          value: file,
+          checked: selectedFiles.includes(file),
+        })),
+        pageSize: 20,
+        loop: false,
+        instructions: false,
+      },
+    ]);
+    selectedFiles = action;
+    console.clear();
+    console.log(`Updated total tokens: ${calculateTotalTokens(selectedFiles)}`);
+
+    const { isDone } = await inquirer.prompt([
+      {
+        type: "confirm",
+        name: "isDone",
+        message: "Are you done selecting files?",
+        default: true,
+      },
+    ]);
+    if (isDone) break;
+  }
   return selectedFiles;
 }
 
 async function processFiles(fileObjects) {
-  displayFileInfo(fileObjects);
+  // displayFileInfo(fileObjects);
   const selectedFiles = await selectFiles(fileObjects);
-  updateTotalTokens(selectedFiles);
   const finalString = concatenateSelectedFiles(selectedFiles);
   console.log("Final concatenated string:");
   console.log(finalString);
@@ -202,10 +212,3 @@ async function main() {
 }
 
 main().catch(console.error);
-
-// display list of tokens and allow user to toggle
-// add delimiters and filenames and make final string
-// allow user to choose a pre-proompt
-// copy the final string to the clipboard with the pre-proompt
-// save final string to a text file
-// display success message
