@@ -64,19 +64,19 @@ const fileExtentionsToExclude = [
 const prompts = {
   1: {
     title: "Error checking",
-    body: "Act as a senior software engineer performing a code review. Your task is to review the above coding project for potential bugs. The project files are named and delimited by backticks. Ask questions before starting if you need to understand the project. Your output should be a list of suggested improvements, with brief explanations, and the parts of the code you are changing",
+    body: "Act as a senior software engineer performing a code review. Your task is to review the above coding project for potential bugs. The project files are named and delimited by backticks. Ask questions before starting if you need to understand the project. Your output should be a list of suggested improvements, with brief explanations, and the parts of the code you are changing.",
   },
   2: {
     title: "Security vulnerability assessment",
-    body: "Act as a senior security engineer performing a code review. Your task is to review the above coding project for security vulnerabilities and suggest ways to make the code more secure. The project files are named and delimited by backticks. Ask questions before starting if you need to understand the project. Your output should be a list of suggested improvements, with brief explanations, and any parts of the code you are changing",
+    body: "Act as a senior security engineer performing a code review. Your task is to review the above coding project for security vulnerabilities and suggest ways to make the code more secure. The project files are named and delimited by backticks. Ask questions before starting if you need to understand the project. Your output should be a list of suggested improvements, with brief explanations, and any parts of the code you are changing.",
   },
   3: {
     title: "Improvements to memory and time complexity",
-    body: "Act as a senior software engineer performing a code review. Your task is to review the above coding project for ways to make the code more efficient in terms of memory and time complexity. The project files are named and delimited by backticks. Ask  questions before starting if you need to understand the project. Your output should be a list of suggested improvements, with brief explanations, and any parts of the code you are changing",
+    body: "Act as a senior software engineer performing a code review. Your task is to review the above coding project for ways to make the code more efficient in terms of memory and time complexity. The project files are named and delimited by backticks. Ask  questions before starting if you need to understand the project. Your output should be a list of suggested improvements, with brief explanations, and any parts of the code you are changing.",
   },
   4: {
     title: "Add comments and create documentation",
-    body: "Act as a senior software engineer. Your task is to create documentation for the above coding project. The project files are named and delimited by backticks. You shall also review the code for readability and add any comments you think are necessary to make the code easier to understand. Ask questions before starting if you need to understand the project. Your output should be document in the form of a markdown file, plus any additions to the code where you deem it necessary to add comments",
+    body: "Act as a senior software engineer. Your task is to create documentation for the above coding project. The project files are named and delimited by backticks. You shall also review the code for readability and add any comments you think are necessary to make the code easier to understand. Ask questions before starting if you need to understand the project. Your output should be document in the form of a markdown file, plus any additions to the code where you deem it necessary to add comments.",
   },
   5: {
     title: "Provide requirements for refactoring or additions to code",
@@ -188,16 +188,16 @@ async function selectFiles(fileObjects) {
         name: "action",
         message:
           chalk.yellow(
-            `\nSelect files to include (Starting token count: ${chalk.yellow(
+            `\n💡 Select files to include (Starting token count: ${chalk.yellow(
               calculateTotalTokens(selectedFiles)
             )})\n`
           ) +
           chalk.blue(
-            `Reduce token count by toggling large or irrelevant files off\n`
+            `💡 Reduce token count by toggling large or irrelevant files off\n`
           ) +
-          chalk.blue(`Space to select/deselect || a to select all\n`) +
-          chalk.blue(`Arrow keys to navigate\n`) +
-          chalk.yellow(`Enter when done.\n`),
+          chalk.blue(`💡 Space to select/deselect || a to select all\n`) +
+          chalk.blue(`💡 Arrow keys to navigate\n`) +
+          chalk.yellow(`💡 Enter when done.\n`),
         choices: fileObjects.map((file) => ({
           name:
             chalk.blue(file.filename) +
@@ -258,7 +258,7 @@ async function processFiles(fileObjects) {
   if (selectedPrompt) {
     finalString += selectedPrompt + "\n\n";
   }
-  finalString = concatenateSelectedFiles(selectedFiles);
+  finalString += concatenateSelectedFiles(selectedFiles);
   return finalString;
 }
 
