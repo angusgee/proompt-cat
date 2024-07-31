@@ -52,8 +52,6 @@ Remember to paste in your requirements or error messages into the LLM if you cho
 
 ## Getting started
 
-NOTE: this is an early release. It was developed on WSL Ubuntu and has been tested on Kali.
-
 1. Start by running this command to install the tool globally using npm.
 
 ```bash
@@ -65,3 +63,49 @@ npm install -g proompt-cat
 ```bash
 proompt-cat
 ```
+
+## Contributing and Reporting Bugs
+
+We welcome contributions to Proompt Cat and appreciate your help in making this tool even more money 💲💲!
+
+Here's how you can contribute or report bugs:
+
+### Reporting Bugs
+
+If you encounter a bug or unexpected behavior:
+
+1. First, check the [existing issues](https://github.com/yourusername/proompt-cat/issues) to see if the bug has already been reported.
+2. If not, [open a new issue](https://github.com/yourusername/proompt-cat/issues/new).
+3. Provide a clear and descriptive title.
+4. In the description, include:
+   - Steps to reproduce the bug
+   - Expected behavior
+   - Actual behavior
+   - Your operating system and Node.js version
+   - Any relevant error messages or screenshots
+
+### Contributing Code
+
+If you'd like to contribute code:
+
+1. Fork the repository.
+2. Create a new branch for your feature or bug fix.
+3. Make your changes, ensuring you follow the project's coding style.
+4. Add or update tests as necessary.
+5. Ensure all tests pass by running `npm test`.
+6. Commit your changes with a clear and descriptive commit message.
+7. Push your branch to your fork.
+8. Open a pull request against the main repository's `main` branch.
+
+### Suggesting Enhancements
+
+Have an idea to improve Proompt Cat?
+
+1. [Open a new issue](https://github.com/yourusername/proompt-cat/issues/new).
+2. Label it as an enhancement.
+3. Clearly describe your suggestion, including:
+   - The problem it solves
+   - How it should work
+   - Any potential drawbacks
+
+We appreciate your contributions!
