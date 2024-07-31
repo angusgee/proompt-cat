@@ -101,7 +101,7 @@ If you'd like to contribute code:
 
 Have an idea to improve Proompt Cat?
 
-1. [Open a new issue](https://github.com/yourusername/proompt-cat/issues/new).
+1. [Open a new issue](https://github.com/angusgee/proompt-cat/issues/new).
 2. Label it as an enhancement.
 3. Clearly describe your suggestion, including:
    - The problem it solves
