@@ -106,6 +106,7 @@ async function readFileContents(filePath) {
   }
 }
 
+// create an array of objects to hold the filename and contents
 async function createFileObjects(filePaths) {
   const fileObjects = [];
   for (const filePath of filePaths) {
@@ -126,6 +127,7 @@ function countTokens(fileObject) {
   return tokens ? tokens.length : 0;
 }
 
+// add the token counts to the objects
 function addTokenCount(fileObject) {
   return {
     ...fileObject,
