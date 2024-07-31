@@ -1,4 +1,4 @@
-# Cat Gippity
+# Proompt Cat
 
 Turbocharge your software development workflows by leveraging the power of AI.
 
