@@ -5,6 +5,7 @@ import gradient from "gradient-string";
 import util from "util";
 import fs from "fs/promises";
 import path from "path";
+import inquirer from "inquirer";
 
 const sleep = (ms = 1000) => new Promise((resolve) => setTimeout(resolve, ms));
 const figletPromise = util.promisify(figlet);
