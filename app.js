@@ -59,6 +59,8 @@ const fileExtentionsToExclude = [
   ".pyz",
   ".zip",
   ".spec",
+  ".tgz",
+  ".zip",
 ];
 
 const prompts = {
