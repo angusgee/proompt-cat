@@ -173,12 +173,14 @@ function calculateTotalTokens(fileObjects) {
   }
 }
 
+// concatenate contents of files together and add delimiters
 function concatenateSelectedFiles(selectedFiles) {
   return selectedFiles.reduce((result, file) => {
     return result + `\`\`\`\n<${file.filename}>:\n${file.contents}\n\`\`\``;
   }, "");
 }
 
+// user chooses files to include
 async function selectFiles(fileObjects) {
   let selectedFiles = [...fileObjects];
   while (true) {
@@ -229,6 +231,7 @@ async function selectFiles(fileObjects) {
   return selectedFiles;
 }
 
+// user chooses a prompt
 async function selectPrompt() {
   console.log(
     chalk.yellow(
@@ -251,6 +254,7 @@ async function selectPrompt() {
   return null;
 }
 
+// call functions to choose files and prompt and concatenate the results together
 async function processFiles(fileObjects) {
   const selectedFiles = await selectFiles(fileObjects);
   let finalString = "";
@@ -262,6 +266,7 @@ async function processFiles(fileObjects) {
   return finalString;
 }
 
+// copy final string to clipboard and display rainbow success animation
 async function copyToClipboard(text) {
   try {
     await clipboardy.write(text);
