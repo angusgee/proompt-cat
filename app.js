@@ -165,12 +165,12 @@ async function selectFiles(fileObjects) {
               calculateTotalTokens(selectedFiles)
             )})\n`
           ) +
-          chalk.green(
+          chalk.blue(
             `Reduce token count by toggling large or irrelevant files off\n`
           ) +
-          chalk.magenta(`Arrow keys to navigate\n`) +
-          chalk.blue(`Space to select/deselect\n`) +
-          chalk.red(`Enter when done.\n`),
+          chalk.blue(`Space to select/deselect || a to select all\n`) +
+          chalk.blue(`Arrow keys to navigate\n`) +
+          chalk.yellow(`Enter when done.\n`),
         choices: fileObjects.map((file) => ({
           name:
             chalk.blue(file.filename) +
@@ -184,7 +184,6 @@ async function selectFiles(fileObjects) {
       },
     ]);
     selectedFiles = action;
-    console.clear();
     console.log(
       chalk.yellow(
         `Updated total tokens: ${calculateTotalTokens(selectedFiles)}`
@@ -214,14 +213,13 @@ async function processFiles(fileObjects) {
 async function copyToClipboard(text) {
   try {
     await clipboardy.write(text);
-    console.log(chalk.green("Project successfully copied to clipboard!"));
+    console.log(chalk.green("\nProject successfully copied to clipboard!"));
   } catch (error) {
-    console.error(chalk.red("Failed to copy to clipboard: "), error);
+    console.error(chalk.red("\nFailed to copy to clipboard: "), error);
   }
 }
 
 async function main() {
-  console.clear();
   await showStartingScreen();
   const currentDir = process.cwd();
   const fileList = await getFilePaths(currentDir);
