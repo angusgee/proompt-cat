@@ -214,13 +214,14 @@ async function processFiles(fileObjects) {
 async function copyToClipboard(text) {
   try {
     await clipboardy.write(text);
-    console.log(chalk.green("Successfully copied to clipboard!"));
+    console.log(chalk.green("Project successfully copied to clipboard!"));
   } catch (error) {
-    console.error(chalk.red("Failed to copy to clipboard:"), error);
+    console.error(chalk.red("Failed to copy to clipboard: "), error);
   }
 }
 
 async function main() {
+  console.clear();
   await showStartingScreen();
   const currentDir = process.cwd();
   const fileList = await getFilePaths(currentDir);
