@@ -114,7 +114,7 @@ async function createFileObjects(filePaths) {
     const content = await readFileContents(filePath);
     if (content !== null) {
       fileObjects.push({
-        name: path.basename(filePath),
+        filename: path.basename(filePath),
         contents: content,
       });
     }
@@ -140,17 +140,65 @@ function calculateTotalTokens(fileObjects) {
   return fileObjects.reduce((total, file) => total + file.tokens, 0);
 }
 
+function displayFileInfo(fileObjects) {
+  fileObjects.forEach((file) => {
+    console.log(`${file.filename}: ${file.tokens} tokens`);
+  });
+  console.log(`Total tokens: ${calculateTotalTokens(fileObjects)}`);
+}
+
+function createCheckboxChoices(fileObjects) {
+  return fileObjects.map((file) => ({
+    name: `${file.filename} (${file.tokens} tokens)`,
+    value: file,
+    checked: true,
+  }));
+}
+
+function updateTotalTokens(choices) {
+  const selectedFiles = choices
+    .filter((choice) => choice.checked)
+    .map((choice) => choice.value);
+  const totalTokens = calculateTotalTokens(selectedFiles);
+  console.log(`Updated total tokens: ${totalTokens}`);
+}
+
+function concatenateSelectedFiles(selectedFiles) {
+  return selectedFiles.reduce((result, file) => {
+    return result + `\`\`\`<${file.filename}>:\n${file.contents}\`\`\``;
+  }, "");
+}
+
+async function selectFiles(fileObjects) {
+  const { selectedFiles } = await inquirer.prompt([
+    {
+      type: "checkbox",
+      name: "selectedFiles",
+      message:
+        "Select files to include (use arrow keys and space to toggle, Enter when done):",
+      choices: createCheckboxChoices(fileObjects),
+      loop: false,
+    },
+  ]);
+  return selectedFiles;
+}
+
+async function processFiles(fileObjects) {
+  displayFileInfo(fileObjects);
+  const selectedFiles = await selectFiles(fileObjects);
+  updateTotalTokens(selectedFiles);
+  const finalString = concatenateSelectedFiles(selectedFiles);
+  console.log("Final concatenated string:");
+  console.log(finalString);
+}
+
 async function main() {
   await showStartingScreen();
   const currentDir = process.cwd();
   const fileList = await getFilePaths(currentDir);
-  // console.log("filepath list: ", fileList);
   const fileObjects = await createFileObjects(fileList);
-  // console.log("file objects: ", fileObjects);
   const objectsWithTokens = fileObjects.map(addTokenCount);
-  const totalTokens = calculateTotalTokens(objectsWithTokens);
-  console.log("Objects with tokens added", objectsWithTokens);
-  console.log("Total tokens", totalTokens);
+  await processFiles(objectsWithTokens);
 }
 
 main().catch(console.error);
