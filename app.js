@@ -265,7 +265,11 @@ async function processFiles(fileObjects) {
 async function copyToClipboard(text) {
   try {
     await clipboardy.write(text);
-    console.log(chalk.green("\nProject successfully copied to clipboard!"));
+    const successMessage = chalkAnimation.rainbow(
+      "\nSuccessfully copied to clipboard. Happy proompting!"
+    );
+    await sleep(1700);
+    successMessage.stop();
   } catch (error) {
     console.error(chalk.red("\nFailed to copy to clipboard: "), error);
   }
