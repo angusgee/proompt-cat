@@ -115,7 +115,8 @@ async function getFilePaths(dir) {
       } else if (
         item.isFile() &&
         !item.name.includes("package-lock") &&
-        !fileExtentionsToExclude.includes(path.extname(item.name))
+        !fileExtentionsToExclude.includes(path.extname(item.name)) &&
+        !item.name.startsWith(".")
       ) {
         fileList.push(fullPath);
       }
