@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import chalk from "chalk";
 import chalkAnimation from "chalk-animation";
 import figlet from "figlet";
 import gradient from "gradient-string";
@@ -6,8 +7,9 @@ import util from "util";
 import fs from "fs/promises";
 import path from "path";
 import inquirer from "inquirer";
+import clipboardy from "clipboardy";
 
-const sleep = (ms = 1000) => new Promise((resolve) => setTimeout(resolve, ms));
+const sleep = (ms = 1300) => new Promise((resolve) => setTimeout(resolve, ms));
 const figletPromise = util.promisify(figlet);
 
 const fileExtentionsToExclude = [
@@ -144,13 +146,6 @@ function calculateTotalTokens(fileObjects) {
   }
 }
 
-// function displayFileInfo(fileObjects) {
-//   fileObjects.forEach((file) => {
-//     console.log(`${file.filename}: ${file.tokens} tokens`);
-//   });
-//   console.log(`Total tokens: ${calculateTotalTokens(fileObjects)}`);
-// }
-
 function concatenateSelectedFiles(selectedFiles) {
   return selectedFiles.reduce((result, file) => {
     return result + `\`\`\`\n<${file.filename}>:\n${file.contents}\n\`\`\``;
@@ -164,11 +159,22 @@ async function selectFiles(fileObjects) {
       {
         type: "checkbox",
         name: "action",
-        message: `\nSelect files to include. Starting tokens: ${calculateTotalTokens(
-          selectedFiles
-        )}.\n\nReduce token count if desired by toggling large or irrelevant files off. \nPress enter when done.\n`,
+        message:
+          chalk.yellow(
+            `\nSelect files to include (Starting token count: ${chalk.yellow(
+              calculateTotalTokens(selectedFiles)
+            )})\n`
+          ) +
+          chalk.green(
+            `Reduce token count by toggling large or irrelevant files off\n`
+          ) +
+          chalk.magenta(`Arrow keys to navigate\n`) +
+          chalk.blue(`Space to select/deselect\n`) +
+          chalk.red(`Enter when done.\n`),
         choices: fileObjects.map((file) => ({
-          name: `${file.filename} (${file.tokens} tokens)`,
+          name:
+            chalk.blue(file.filename) +
+            chalk.gray(` (${chalk.yellow(file.tokens)} tokens)`),
           value: file,
           checked: selectedFiles.includes(file),
         })),
@@ -179,13 +185,16 @@ async function selectFiles(fileObjects) {
     ]);
     selectedFiles = action;
     console.clear();
-    console.log(`Updated total tokens: ${calculateTotalTokens(selectedFiles)}`);
-
+    console.log(
+      chalk.yellow(
+        `Updated total tokens: ${calculateTotalTokens(selectedFiles)}`
+      )
+    );
     const { isDone } = await inquirer.prompt([
       {
         type: "confirm",
         name: "isDone",
-        message: "Are you done selecting files?",
+        message: chalk.green("Are you done selecting files?"),
         default: true,
       },
     ]);
@@ -195,11 +204,20 @@ async function selectFiles(fileObjects) {
 }
 
 async function processFiles(fileObjects) {
-  // displayFileInfo(fileObjects);
   const selectedFiles = await selectFiles(fileObjects);
   const finalString = concatenateSelectedFiles(selectedFiles);
-  console.log("Final concatenated string:");
-  console.log(finalString);
+  // console.log("Final concatenated string:");
+  // console.log(finalString);
+  return finalString;
+}
+
+async function copyToClipboard(text) {
+  try {
+    await clipboardy.write(text);
+    console.log(chalk.green("Successfully copied to clipboard!"));
+  } catch (error) {
+    console.error(chalk.red("Failed to copy to clipboard:"), error);
+  }
 }
 
 async function main() {
@@ -208,7 +226,8 @@ async function main() {
   const fileList = await getFilePaths(currentDir);
   const fileObjects = await createFileObjects(fileList);
   const objectsWithTokens = fileObjects.map(addTokenCount);
-  await processFiles(objectsWithTokens);
+  const finalString = await processFiles(objectsWithTokens);
+  await copyToClipboard(finalString);
 }
 
 main().catch(console.error);
