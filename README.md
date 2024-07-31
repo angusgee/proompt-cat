@@ -1,5 +1,7 @@
 # Proompt Cat
 
+[![npm version](https://img.shields.io/npm/v/proompt-cat.svg)](https://www.npmjs.com/package/proompt-cat)[![License](https://img.shields.io/npm/l/proompt-cat.svg)](https://github.com/yourusername/proompt-cat/blob/main/LICENSE)[![npm downloads](https://img.shields.io/npm/dm/proompt-cat.svg)](https://www.npmjs.com/package/proompt-cat)
+
 Turbocharge your software development workflows by leveraging the power of AI.
 
 When seeking coding help from AI models like GPT-4, you want to:
@@ -52,14 +54,14 @@ Remember to paste in your requirements or error messages if you chose 5. or 6:
 
 NOTE: this is an early release. It was developed on WSL Ubuntu and has been tested on Kali.
 
-1. Start by running this command to install the tool using npm.
+1. Start by running this command to install the tool globally using npm.
 
 ```bash
-npm install -g proopmt-cat && chmod proompt-cat +x
+npm install -g proompt-cat
 ```
 
 2. Now you should be able to run the script from any folder.
 
 ```bash
-node proompt-cat
+proompt-cat
 ```
