@@ -126,26 +126,35 @@ function countTokens(fileObject) {
   return tokens ? tokens.length : 0;
 }
 
+function addTokenCount(fileObject) {
+  return {
+    ...fileObject,
+    tokens: countTokens(fileObject),
+  };
+}
+
+function calculateTotalTokens(fileObjects) {
+  return fileObjects.reduce((total, file) => total + file.tokens, 0);
+}
+
 async function main() {
   await showStartingScreen();
   const currentDir = process.cwd();
   const fileList = await getFilePaths(currentDir);
-  // console.log("file list: ", fileList);
+  // console.log("filepath list: ", fileList);
   const fileObjects = await createFileObjects(fileList);
   // console.log("file objects: ", fileObjects);
-  for (const fileObject of fileObjects) {
-    fileObject.tokens = countTokens(fileObject);
-  }
-  console.log("File objects:", fileObjects);
+  const objectsWithTokens = fileObjects.map(addTokenCount);
+  const totalTokens = calculateTotalTokens(objectsWithTokens);
+  console.log("Objects with tokens added", objectsWithTokens);
+  console.log("Total tokens", totalTokens);
 }
 
 main().catch(console.error);
 
-// count tokens
-// remove blank rows (??)
-// add delimiters
 // display list of tokens and allow user to toggle
-// allow user to choose a prompt
-// copy the final string to the clipboard
+// add delimiters and filenames and make final string
+// allow user to choose a pre-proompt
+// copy the final string to the clipboard with the pre-proompt
 // save final string to a text file
 // display success message
