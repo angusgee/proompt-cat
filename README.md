@@ -74,8 +74,8 @@ Here's how you can contribute or report bugs:
 
 If you encounter a bug or unexpected behavior:
 
-1. First, check the [existing issues](https://github.com/yourusername/proompt-cat/issues) to see if the bug has already been reported.
-2. If not, [open a new issue](https://github.com/yourusername/proompt-cat/issues/new).
+1. First, check the [existing issues](https://github.com/angusgee/proompt-cat/issues) to see if the bug has already been reported.
+2. If not, [open a new issue](https://github.com/angusgee/proompt-cat/issues/new).
 3. Provide a clear and descriptive title.
 4. In the description, include:
    - Steps to reproduce the bug
