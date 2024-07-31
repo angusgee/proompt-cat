@@ -100,7 +100,7 @@ async function showStartingScreen() {
   animatedTitle.stop();
 }
 
-// recursively get all filepaths from directory
+// recursively get all file paths from dir and subdirs
 async function getFilePaths(dir) {
   const fileList = [];
   try {
@@ -108,21 +108,39 @@ async function getFilePaths(dir) {
     for (const item of items) {
       const fullPath = path.join(dir, item.name);
 
-      if (item.isDirectory()) {
-        if (!["node_modules", ".git", "dist"].includes(item.name)) {
-          fileList.push(...(await getFilePaths(fullPath)));
+      try {
+        if (item.isDirectory()) {
+          if (!["node_modules", ".git", "dist"].includes(item.name)) {
+            fileList.push(...(await getFilePaths(fullPath)));
+          }
+        } else if (
+          item.isFile() &&
+          !item.name.includes("package-lock") &&
+          !fileExtentionsToExclude.includes(path.extname(item.name)) &&
+          !item.name.startsWith(".")
+        ) {
+          fileList.push(fullPath);
         }
-      } else if (
-        item.isFile() &&
-        !item.name.includes("package-lock") &&
-        !fileExtentionsToExclude.includes(path.extname(item.name)) &&
-        !item.name.startsWith(".")
-      ) {
-        fileList.push(fullPath);
+      } catch (accessError) {
+        console.log(
+          chalk.yellow(`Warning: Cannot access ${fullPath}. Skipping.`)
+        );
       }
     }
   } catch (error) {
-    console.log("error reading directory: ", dir, error);
+    if (error.code === "EACCES") {
+      console.error(
+        chalk.red(`Error: Permission denied to access directory: ${dir}`)
+      );
+      console.error(
+        chalk.red(
+          "Please run the program in a directory where you have appropriate permissions."
+        )
+      );
+      process.exit(1);
+    } else {
+      console.error(chalk.red(`Error reading directory: ${dir}`), error);
+    }
   }
   return fileList;
 }
