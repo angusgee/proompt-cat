@@ -165,7 +165,7 @@ function updateTotalTokens(choices) {
 
 function concatenateSelectedFiles(selectedFiles) {
   return selectedFiles.reduce((result, file) => {
-    return result + `\`\`\`<${file.filename}>:\n${file.contents}\`\`\``;
+    return result + `\`\`\`\n<${file.filename}>:\n${file.contents}\n\`\`\``;
   }, "");
 }
 
