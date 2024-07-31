@@ -23,13 +23,13 @@ Proompt Cat solves these issues for you.
 Run the script from your folder and select the files you want to include. The token count is dynamically updated:
 
 <p align="center">
-  <img src="" alt="Proompt Cat CLI - choose files" title="Proompt Cat CLI - choose files">
+  <img src="./assets/proompt-cat-select-files.png" alt="Proompt Cat CLI - choose files" title="Proompt Cat CLI - choose files">
 </p>
 
 Next, choose to add on a pre-prompt:
 
 <p align="center">
-  <img src="" alt="Proompt Cat CLI - choose a prompt" title="Proompt Cat CLI - choose a prompt">
+  <img src="./assets/proompt-cat-choose-prompt.png" alt="Proompt Cat CLI - choose a prompt" title="Proompt Cat CLI - choose a prompt">
 </p>
 
 The contents of your project files are individually named, delimited, and concatenated together, then copied to your clipboard.
