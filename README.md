@@ -60,7 +60,7 @@ NOTE: this is an early release. It was developed on WSL Ubuntu and has been test
 npm install -g proompt-cat
 ```
 
-2. Now you should be able to run the script from any folder.
+2. Now you should be able to run the script from any project folder.
 
 ```bash
 proompt-cat
