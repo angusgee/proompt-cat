@@ -28,7 +28,7 @@ Run the script from your folder and select the files you want to include. The to
   <img src="./assets/proompt-cat-select-files.png" alt="Proompt Cat CLI - choose files" title="Proompt Cat CLI - choose files">
 </p>
 
-Next, choose to add on a pre-prompt:
+Next, choose to add on a pre-proompt:
 
 <p align="center">
   <img src="./assets/proompt-cat-choose-prompt.png" alt="Proompt Cat CLI - choose a prompt" title="Proompt Cat CLI - choose a prompt">
