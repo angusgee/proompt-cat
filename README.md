@@ -38,7 +38,7 @@ The contents of your project files are individually named, delimited, and concat
 
 You get the optimum context from your project with only a few key presses. 🚀🚀
 
-Remember to paste in your requirements or error messages into the LLM if you chose 5. or 6:
+Remember to paste in your requirements or error messages into the LLM chat window if you chose 5. or 6:
 
 <p align="center">
 <img src="./assets/chatgpt-placeholder.png" alt="ChatGPT window with placeholder text showing" title="ChatGPT window with placeholder text showing">
