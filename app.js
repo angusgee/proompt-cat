@@ -112,7 +112,10 @@ async function getFilePaths(dir) {
 
       try {
         if (item.isDirectory()) {
-          if (!["node_modules", ".git", "dist"].includes(item.name)) {
+          if (
+            !["node_modules", "dist"].includes(item.name) &&
+            !item.name.startsWith(".")
+          ) {
             fileList.push(...(await getFilePaths(fullPath)));
           }
         } else if (
@@ -252,7 +255,7 @@ async function selectFiles(fileObjects) {
   return selectedFiles;
 }
 
-// user chooses a prompt
+// let user choose a prompt
 async function selectPrompt() {
   console.log(
     chalk.yellow(
