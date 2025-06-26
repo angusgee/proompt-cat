@@ -66,26 +66,26 @@ const fileExtentionsToExclude = [
 const prompts = {
   1: {
     title: "Error checking",
-    body: "Act as a senior software engineer performing a code review. Your task is to review the above coding project for potential bugs. The project files are named and delimited by backticks. Ask questions before starting if you need to understand the project. Your output should be a list of suggested improvements, with brief explanations, and the parts of the code you are changing.",
+    body: "Act as a senior software engineer performing a code review. Your task is to review the above coding project for potential bugs. The project files are named and delimited by backticks. Ask questions before starting if you need to understand the project. Your output should be a list of suggested improvements, with brief explanations, and the parts of the code you suggest changing (if necessary.)",
   },
   2: {
     title: "Security vulnerability assessment",
-    body: "Act as a senior security engineer performing a code review. Your task is to review the above coding project for security vulnerabilities and suggest ways to make the code more secure. The project files are named and delimited by backticks. Ask questions before starting if you need to understand the project. Your output should be a list of suggested improvements, with brief explanations, and any parts of the code you are changing.",
+    body: "Act as a senior security engineer performing a code review. Your task is to review the above coding project for security vulnerabilities and suggest ways to make the code more secure. The project files are named and delimited by backticks. Ask questions before starting if you need to, in order to understand the project. Your output should be a list of suggested improvements, with brief explanations, and any parts of the code you are changing (if necessary.)",
   },
   3: {
     title: "Improvements to memory and time complexity",
-    body: "Act as a senior software engineer performing a code review. Your task is to review the above coding project for ways to make the code more efficient in terms of memory and time complexity. The project files are named and delimited by backticks. Ask  questions before starting if you need to understand the project. Your output should be a list of suggested improvements, with brief explanations, and any parts of the code you are changing.",
+    body: "Act as a senior software engineer performing a code review. Your task is to review the above coding project for ways to make the code more efficient in terms of memory and time complexity. The project files are named and delimited by backticks. Ask  questions before starting if you need to, in order to understand the project. Your output should be a list of suggested improvements, with brief explanations, and any parts of the code you are changing (if necessary.)",
   },
   4: {
     title: "Add comments and create documentation",
-    body: "Act as a senior software engineer. Your task is to create documentation for the above coding project. The project files are named and delimited by backticks. You shall also review the code for readability and add any comments you think are necessary to make the code easier to understand. Ask questions before starting if you need to understand the project. Your output should be document in the form of a markdown file, plus any additions to the code where you deem it necessary to add comments.",
+    body: "Act as a senior software engineer. Your task is to create documentation for the above coding project. The project files are named and delimited by backticks. You shall also review the code for readability and add any comments you think are necessary to make the code easier to understand. Ask questions before starting if you need to, in order to understand the project. Your output should be document in the form of a markdown file, plus any additions to the code where you deem it necessary to add comments.",
   },
   5: {
-    title: "Provide requirements for refactoring or additions to code",
+    title: "Add placeholder for requirements for refactoring or new features",
     body: 'Act as a senior software developer and coding mentor. Your task is to refactor the above coding project delimited by triple backticks according to the new requirements in triple quotes. Your output should only be the part of the code you are changing, plus an explanation.\n"""\nPASTE_REQUIREMENTS_HERE\n"""',
   },
   6: {
-    title: "Provide error message for debugging",
+    title: "Add placeholder for error message for debugging",
     body: 'Act as a senior software developer and coding mentor. Your task is to correct the above coding project to fix the errors. The project files are named and delimited by backticks. The error messages are delimited by triple quotes. Your output should only be the part of the code you are changing, plus explanations of your proposed fixes.\n """\nPASTE_ERROR_MESSAGES_HERE\n"""',
   },
 };
@@ -213,21 +213,20 @@ async function selectFiles(fileObjects) {
         type: "checkbox",
         name: "action",
         message:
-          chalk.yellow(
-            `\n💡 Select files to include (Starting token count: ${chalk.yellow(
+          chalk.grey(
+          `\n👀 Current token count: ${chalk.white(
               calculateTotalTokens(selectedFiles)
-            )})\n`
+            )})\n`)
+           +
+          chalk.grey(
+            `📉 Reduce this if needed by toggling large or irrelevant files off\n`
           ) +
-          chalk.blue(
-            `💡 Reduce token count by toggling large or irrelevant files off\n`
-          ) +
-          chalk.blue(`💡 Space to select/deselect || a to select all\n`) +
-          chalk.blue(`💡 Arrow keys to navigate\n`) +
-          chalk.yellow(`💡 Enter when done.\n`),
+          chalk.grey(`👇 Use arrow keys and space bar to toggle\n`) +
+          chalk.grey(`✅ Hit enter to recalculate token count and proceed\n`),
         choices: fileObjects.map((file) => ({
           name:
-            chalk.blue(file.filename) +
-            chalk.gray(` (${chalk.yellow(file.tokens)} tokens)`),
+            chalk.grey(file.filename) +
+            chalk.grey(` (${chalk.cyan(file.tokens)} tokens)`),
           value: file,
           checked: selectedFiles.includes(file),
         })),
@@ -238,15 +237,15 @@ async function selectFiles(fileObjects) {
     ]);
     selectedFiles = action;
     console.log(
-      chalk.yellow(
-        `Updated total tokens: ${calculateTotalTokens(selectedFiles)}`
+      chalk.grey(
+        `\nUpdated total tokens: ${chalk.white(calculateTotalTokens(selectedFiles))}`
       )
     );
     const { isDone } = await inquirer.prompt([
       {
         type: "confirm",
         name: "isDone",
-        message: chalk.green("Are you done selecting files?"),
+        message: chalk.white("Are you done selecting files?"),
         default: true,
       },
     ]);
@@ -258,27 +257,29 @@ async function selectFiles(fileObjects) {
 // let user choose a prompt
 async function selectPrompt() {
   console.log(
-    chalk.yellow(
-      "\nSelect a prompt (or any other key to continue without a prompt):"
+    chalk.white(
+      "\nAdd a prompt or placeholder for requirements/error messages:"
     )
   );
+
   for (let i = 1; i <= 6; i++) {
-    console.log(chalk.cyan(`${i}: ${prompts[i].title}`));
-  }
+    console.log(chalk.grey(`${i}: ${prompts[i].title}`));
+  };
+  console.log("\n");
   const { choice } = await inquirer.prompt([
     {
       type: "input",
       name: "choice",
-      message: chalk.yellow("Enter your choice (1-6):"),
+      message: chalk.gray("Enter (1-6) or press any key to skip:"),
     },
   ]);
   if (["1", "2", "3", "4", "5", "6"].includes(choice)) {
     return prompts[choice].body;
-  }
+  };
   return null;
 }
 
-// call functions to choose files and prompt and concatenate the results together
+// choose files and prompt and concatenate the results together
 async function processFiles(fileObjects) {
   const selectedFiles = await selectFiles(fileObjects);
   let finalString = "";
@@ -295,9 +296,9 @@ async function copyToClipboard(text) {
   try {
     await clipboardy.write(text);
     const successMessage = chalkAnimation.rainbow(
-      "\nSuccessfully copied to clipboard. Happy proompting!"
+      "\nSuccessfully copied to clipboard. Happy proompting!\n"
     );
-    await sleep(1700);
+    await sleep(1300);
     successMessage.stop();
   } catch (error) {
     console.error(chalk.red("\nFailed to copy to clipboard: "), error);
