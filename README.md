@@ -4,7 +4,7 @@
 
 Turbocharge your software development workflows by leveraging the power of AI.
 
-When seeking coding help from AI models like GPT-4, you want to:
+When seeking coding help from AI models like Chat-GPT, you want to:
 
 1. Give the model as much _relevant_ context as possible without exceeding the token limit.
 2. Name your files and use delimiters to help the AI understand the content.
